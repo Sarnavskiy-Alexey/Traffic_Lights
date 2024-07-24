@@ -1,15 +1,6 @@
-#include <iostream>
-#include <atomic>
-#include <vector>
-#include <thread>
-#include <mutex>
-#include "TrafficLight.hpp"
+#include "tests.hpp"
 
-//std::mutex cerr_mutex;
-
-void bufferHandler(std::vector<TrafficLight>& vec);
-
-static void initialize_crossroad(std::vector<TrafficLight>& vec)
+void initialize_crossroad(std::vector<TrafficLight>& vec)
 {
     for (T_ID i = 1; i <= 4; i++)
     {
@@ -83,28 +74,19 @@ static void initialize_crossroad(std::vector<TrafficLight>& vec)
     vec[11].setOthers_2(TL_11_red);
 }
 
-static void work(TrafficLight& TL)
+void work(TrafficLight& TL)
 {
     TL.work();
 }
 
+void reduceObjectsInTL(TrafficLight& TL)
+{
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    TL.deleteObjectFromWait();
+}
 
 int main()
 {
-    std::vector<TrafficLight> all_lights;
-    initialize_crossroad(all_lights);
-
-    std::vector<std::thread> lights_threads;
-    for (size_t i = 0; i < all_lights.size(); i++)
-    {
-        lights_threads.emplace_back(work, std::ref(all_lights[i]));
-    }
-    lights_threads.emplace_back(bufferHandler, std::ref(all_lights));
-
-    for (auto& t : lights_threads)
-    {
-        t.join();
-    }
-
-    return 0;
+    ::testing::InitGoogleTest();
+    return RUN_ALL_TESTS();
 }

@@ -7,16 +7,6 @@ project("traffic_lights_test" VERSION 1.0)
 # Добавляем сторонние библиотеки
 include(FetchContent)
 
-# Отключение модульных тестов для библиотеки json
-set(JSON_BuildTests OFF CACHE INTERNAL "")
-
-# Скачивание nlohmann json из GitHub репозитория
-FetchContent_Declare(
-    json
-    URL
-    https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
-)
-
 # Скачиваем gtest из GitHub репозитория (если еще не скачан)
 FetchContent_Declare(
     googletest
@@ -33,8 +23,8 @@ set(gtest_disable_pthreads on)
 # Предотвращение переопределения настроек компилятора/компоновщика родительского проекта
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-# Открытие доступности скаченных из GitHub репозитория данных о json и google-test
-FetchContent_MakeAvailable(json googletest)
+# Открытие доступности скаченных из GitHub репозитория данных о google-test
+FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
@@ -51,7 +41,6 @@ add_executable(
 
 target_link_libraries(traffic_lights_test PRIVATE
     gtest_main
-    nlohmann_json::nlohmann_json
     MyTrafficLightsLib
 )
 

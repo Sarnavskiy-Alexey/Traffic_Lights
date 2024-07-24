@@ -143,6 +143,9 @@ public:
 
     /* метод получения ID светофора */
     T_ID getID() const noexcept;
+
+    /* метод получения ID светофора */
+    size_t getWaitSize() const noexcept;
 };
 
 extern std::queue<T_MESSAGE> message_buffer;

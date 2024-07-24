@@ -84,6 +84,11 @@ T_TL_COLOR TrafficLight::getColor() const noexcept
     return this->color;
 }
 
+size_t TrafficLight::getWaitSize() const noexcept
+{
+    return this->wait_size;
+}
+
 void TrafficLight::addNewObjectInWait() noexcept
 {
     wait_size_mutex.lock();
