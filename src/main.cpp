@@ -2,10 +2,7 @@
 #include <atomic>
 #include <vector>
 #include <thread>
-#include <mutex>
 #include "TrafficLight.hpp"
-
-//std::mutex cerr_mutex;
 
 void bufferHandler(std::vector<TrafficLight>& vec);
 

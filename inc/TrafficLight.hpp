@@ -41,8 +41,8 @@ class TrafficLight
 {
     /* максимальное время ожидания зеленого: 60 тактов */
     const int max_time_limit = 60;
-    /* минимальное время работы зеленого: 15 тактов */
-    const int min_time_limit = 15;
+    /* минимальное время работы зеленого: 20 тактов */
+    const int min_time_limit = 20;
 
 private:
     /* таймер работы красного */
@@ -51,10 +51,13 @@ private:
     /* таймер работы зеленого */
     int timer_green;
 
+    /* признак только инициализированного светофора */
+    bool initialized;
+
     /* уникальный идентификатор светофора */
     T_ID id;
 
-    /* очередь сообщений */ 
+    /* очередь сообщений */
     std::queue<T_MESSAGE> messages;
 
     /* мьютекс для очереди сообщений */
@@ -80,6 +83,10 @@ private:
     std::vector<T_ID> others_2_id;
     std::vector<T_OTHER_TL> others_2;
 
+    /* вектор таймеров других светофоров */
+    std::vector<int> timers_red;
+    std::vector<int> timers_green;
+
     /* метод отправки сообщения */
     void sendMessage();
 
@@ -100,6 +107,7 @@ private:
 
     /* проверка на ожидание зеленого среди others_2 */
     bool check_red_in_others_2();
+    bool check_red_in_others_2_1();
 
     /* проверка на только красные светофоры среди others_2 */
     bool check_all_reds_in_others_2();
@@ -110,8 +118,17 @@ private:
     /* проверка на количество ожидающих зеленого светофора среди others */
     bool check_waiters_in_all_red_others();
 
+    /* проверка на количество ожидающих зеленого светофора среди others_2 с желтым светом */
+    bool check_yellow_others_2();
+
     /* обработчик сообщений */
     void messageHandler();
+
+    /* заполнение таймеров ожиданий */
+    void fillTimer();
+
+    /* функция предсказания следующего состояния светофора */
+    bool predict_green();
 
 public:
     /*  конструктор */
@@ -121,7 +138,7 @@ public:
     TrafficLight(const TrafficLight& TL);
 
     /* добавление записи в очередь */
-    void getMessage(const T_MESSAGE *message);
+    void getMessage(const T_MESSAGE* message);
 
     /* метод добавления объекта в очередь ожидания на светофоре */
     void addNewObjectInWait() noexcept;
@@ -136,7 +153,7 @@ public:
     void work();
 
     /* метод установки id светофоров, которые могут быть зелеными одновременно с текущим */
-    void setOthers(const std::vector<T_ID> &ids);
+    void setOthers(const std::vector<T_ID>& ids);
 
     /* метод установки id светофоров, которые НЕ могут быть зелеными одновременно с текущим */
     void setOthers_2(const std::vector<T_ID>& ids);

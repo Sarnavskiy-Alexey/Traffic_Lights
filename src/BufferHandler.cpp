@@ -13,13 +13,15 @@ void bufferHandler(std::vector<TrafficLight>& vec)
     std::chrono::system_clock::time_point next_time(start);
     std::chrono::system_clock::time_point end;
 
+    T_MESSAGE front;
     while (true)
     {
-        next_time += std::chrono::milliseconds(200);
-        if (!message_buffer.empty())
+        next_time += std::chrono::milliseconds(500);
+        while (!message_buffer.empty())
         {
             message_buffer_mutex.lock();
-            T_MESSAGE front = message_buffer.front();
+            front = message_buffer.front();
+            message_buffer_mutex.unlock();
             for (auto& tl : vec)
             {
                 if (tl.getID() != front.sender_id)
@@ -27,6 +29,7 @@ void bufferHandler(std::vector<TrafficLight>& vec)
                     tl.getMessage(&front);
                 }
             }
+            message_buffer_mutex.lock();
             message_buffer.pop();
             message_buffer_mutex.unlock();
         }
