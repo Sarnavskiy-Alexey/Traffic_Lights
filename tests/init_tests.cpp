@@ -1,6 +1,9 @@
 #include "tests.hpp"
 
-void initialize_crossroad(std::vector<TrafficLight>& vec)
+std::vector<TrafficLight> all_lights;
+std::vector<std::thread> lights_threads;
+
+void initializeCrossroad(std::vector<TrafficLight>& vec)
 {
     for (T_ID i = 1; i <= 4; i++)
     {
@@ -74,6 +77,44 @@ void initialize_crossroad(std::vector<TrafficLight>& vec)
     vec[11].setOthers_2(TL_11_red);
 }
 
+void addObjects(std::vector<TrafficLight>& vec, const int* objects, const size_t size)
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        for (int j = 0; j < objects[i]; j++)
+        {
+            vec[i].addNewObjectInWait();
+        }
+    }
+}
+
+void reduceObjects(std::vector<TrafficLight>& vec)
+{
+    bool end_flag = false;
+    while (true)
+    {
+        end_flag = true;
+        for (auto& tl : vec)
+        {
+            if (tl.getWaitSize())
+            {
+                end_flag = false;
+            }
+        }
+        if (end_flag)
+        {
+            break;
+        }
+        for (auto& tl : vec)
+        {
+            if (tl.getWaitSize() && tl.getColor() == green)
+            {
+                reduceObjectsInTL(tl);
+            }
+        }
+    }
+}
+
 void work(TrafficLight& TL)
 {
     TL.work();
@@ -87,6 +128,19 @@ void reduceObjectsInTL(TrafficLight& TL)
 
 int main()
 {
+    initializeCrossroad(all_lights);
+    for (size_t i = 0; i < 12; i++)
+    {
+        lights_threads.emplace_back(work, std::ref(all_lights[i]));
+    }
+    
+    lights_threads.emplace_back(bufferHandler, std::ref(all_lights));
+
+    for (auto& t : lights_threads)
+    {
+        t.detach();
+    }
+
     ::testing::InitGoogleTest();
     return RUN_ALL_TESTS();
 }
