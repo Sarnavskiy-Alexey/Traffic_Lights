@@ -417,14 +417,14 @@ void TrafficLight::work()
         this->sendMessage();
 
         /* Для формирования лога в консоли и отслеживания работы светофоров */
-        if (this->wait_size > 0)
-        {
-            std::stringstream cout_str;
-            cout_str << int(this->id) << " -> " << this->wait_size << " -> " << this->color << "\n";
-            cout_buffer_mutex.lock();
-            std::cout << cout_str.str();
-            cout_buffer_mutex.unlock();
-        }
+        // if (this->wait_size > 0)
+        // {
+        //     std::stringstream cout_str;
+        //     cout_str << int(this->id) << " -> " << this->wait_size << " -> " << this->color << "\n";
+        //     cout_buffer_mutex.lock();
+        //     std::cout << cout_str.str();
+        //     cout_buffer_mutex.unlock();
+        // }
 
         if (this->color == red)
         {
